@@ -192,18 +192,25 @@ void putShape(uint8_t * buffer, const uint8_t * mask, const uint8_t * shape)
 void drawBuffer(uint8_t x, uint8_t y, uint8_t * buf1, uint8_t * buf2,
                 uint8_t size)
 {
-    int8_t i, j;
+    uint8_t i, j, last;
     uint8_t *workbuf = buf1 - 4;
-    for (i = 0; i < size;) {
+    for (i=0; i<size;) {
         if (buf1[i] == buf2[i]) {
             i++;
             continue;
         }
-        for (j = i; j < size; j++)
-            if (buf1[j] == buf2[i])
+        for (j=last=0;j<size;j++) {
+            if (buf1[i] != buf2[i]) {
+                last=j+1;
+                continue;
+            }
+            else if (last > j+10) {
                 break;
-        display_drawPartial(x + i, y, buf2 + i, j - i, workbuf);
-        i = j;
+            }
+        }
+        display_drawPartial(x + i, y, buf2 + i, last - i, workbuf);
+        y=8; // do not send PAGESTARTADDRESS
+        i=j;
     }
 }
 
