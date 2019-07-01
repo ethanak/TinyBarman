@@ -159,7 +159,7 @@ void display_drawShape(uint8_t x, uint8_t y, const uint8_t * Char)
 void display_drawPartial(uint8_t x, uint8_t y, uint8_t * buf, uint8_t len,
                          uint8_t * workbuf)
 {
-    display_sendCommand(PAGESTARTADDRESS | (y));
+    if (y < 8) display_sendCommand(PAGESTARTADDRESS | (y));
     display_sendCommand(SETLOWCOLUMN | (x & 15));
     display_sendCommand(SETHIGHCOLUMN | x >> 4);
     TWM_beginTransmission(myI2cAddress, workbuf, len + 4);
